@@ -4,7 +4,7 @@ pipeline {
     environment {
         TIMESTAMP = "${new Date().format('yyyyMMdd_HHmmss')}"
         DOCKER_HUB_CREDENTIALS_ID = 'jen-dockerhub'
-        DOCKER_HUB_REPO = 'berlianishma08/MLOps'
+        DOCKER_HUB_REPO = 'berlianishma08/mlops'
     }
 
     stages {

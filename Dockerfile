@@ -18,5 +18,5 @@ RUN pip install -r requirements.txt
 EXPOSE 3000
 
 # Command that runs the app
-CMD ["npm", "start"]
+CMD ["npm", "start", "python", "app.py"]
 

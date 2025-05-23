@@ -1,17 +1,18 @@
 # Use an official alpine nodeJS image as the base image
 FROM node:alpine
 
+# Gunakan image Python
+FROM python:3.10-slim
+
 # Set working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the container
-COPY package*.json ./
-
-# Install only production nodeJS dependencies in Docker Image
-RUN npm install --only=production
-
 # Copy the rest of the application code into the container
 COPY . .
+
+# Install dependencies Python
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
 # Expose the app on a port
 EXPOSE 3000

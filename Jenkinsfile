@@ -55,7 +55,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${DOCKER_HUB_REPO}:${TIMESTAMP}", "MLOps/")
+                    dockerImage = docker.build("${DOCKER_HUB_REPO}:${TIMESTAMP}", ".")
                 }
             }
         }

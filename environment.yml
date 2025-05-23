@@ -1,0 +1,15 @@
+name: myenv
+channels:
+  - defaults
+dependencies:
+  - numpy
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - imbalanced-learn
+  - xgboost
+  - lightgbm
+  - catboost
+  - mlflow
+  - bentoml
+

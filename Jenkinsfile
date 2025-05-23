@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout Repository') {
             steps {
-                git branch: 'main', credentialsId: 'jen-doc-git', url: 'https://github.com/ghazafm/brawijaya-mlops-pipeline.git'
+                git credentialsId: 'jen-doc-git', url: 'https://github.com/berlianishma08/MLOps.git'
             }
         }
 

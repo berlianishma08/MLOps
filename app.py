@@ -1,22 +1,30 @@
-from flask import Flask, request, jsonify
-import joblib
+from flask import Flask, request, jsonify, render_template
 import pandas as pd
+import joblib
+import os
 
 app = Flask(__name__)
 
-# Load model yang sudah di-deploy
-model = joblib.load("Model/model/RandomForestClassifier_deployed_20250523_065425.pkl")
+# Load model
+MODEL_PATH = "Model/model/RandomForestClassifier_deployed_20250523_065425.pkl"
+model = joblib.load(MODEL_PATH)
 
-@app.route('/')
+# Halaman 1: Home page (GET)
+@app.route("/")
 def home():
-    return "🚀 Model is running!"
+    return render_template("index.html")
 
-@app.route('/predict', methods=['POST'])
+# Halaman 2: Prediction endpoint (POST)
+@app.route("/predict", methods=["POST"])
 def predict():
-    data = request.get_json()
-    df = pd.DataFrame([data])
-    prediction = model.predict(df)
-    return jsonify({'prediction': int(prediction[0])})
+    try:
+        # Ambil data dari form atau API
+        input_data = request.get_json() or request.form.to_dict()
+        df = pd.DataFrame([input_data])
+        prediction = model.predict(df)[0]
+        return jsonify({"prediction": int(prediction)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

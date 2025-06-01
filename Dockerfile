@@ -15,7 +15,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose the app on a port
-EXPOSE 3000
+EXPOSE 5000
 
 # Command that runs the app
 CMD ["python", "app.py"]

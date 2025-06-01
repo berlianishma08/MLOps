@@ -70,6 +70,12 @@ pipeline {
                 }
             }
         }
+        
+        stage('Deploy') {
+            steps {
+                sh 'docker run -d -p 5000:5000 mlops-app:latest'
+            }
+        }
     }
 
     post {

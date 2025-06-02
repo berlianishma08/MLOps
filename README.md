@@ -17,15 +17,15 @@ MLOps/
 │   └── deploy_model.py      # Script untuk menyimpan atau serving model
 ├── templates/               # Template HTML untuk Flask Web App
 │   └── index.html           # Merender halaman web
-├── jenkins/                 # (Opsional) Konfigurasi tambahan untuk Jenkins
+├── jenkins/                 # Konfigurasi tambahan untuk Jenkins
 ├── myenv/                   # Virtual environment Python (hasil dari `python3 -m venv`)
 ├── app.py                   # Aplikasi utama berbasis Flask (Web API)
-├── fix_model.py             # Script tambahan untuk fixing atau validasi model
+├── fix_model.py             # Fixing atau validasi model
 ├── Dockerfile               # Konfigurasi Docker untuk membuat image proyek
 ├── docker-compose.yml       # Menjalankan beberapa container sekaligus (Flask, Jenkins, dsb.)
 ├── Jenkinsfile              # Pipeline deklaratif untuk CI/CD menggunakan Jenkins
 ├── requirements.txt         # Dependencies Python (untuk `pip install -r`)
-├── environment.yml          # Environment Conda (opsional, alternatif dari requirements.txt)
+├── environment.yml          # Environment 
 └── README.md                # Dokumentasi proyek (deskripsi, instruksi, teknologi, dll.)
 
 

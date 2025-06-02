@@ -57,46 +57,115 @@ MLOps/
 8. **Deploy Application**  
    Mendeploy container final ke port lokal (`3000`).
 
-## 📂 Contoh Perintah Manual
+---
 
-Jalankan di local environment:
+## 📦 Deployment & Implementasi Proyek
 
-```bash
-# Setup
-python3 -m venv myenv
-source myenv/bin/activate
-pip install -r requirements.txt
+### 🧰 Prasyarat Sistem
 
-# Data Preparation
-python Script/data_preparation.py \
-    --data_dir Data/raw \
-    --data_new Data/clean \
-    --output_dir Model/preprocessor \
-    --target_col Survived \
-    --random_state 42 \
-    --columns_to_remove Cabin PassengerId Name
-
-# Train Model
-python Script/train_model.py \
-    --data_dir Data/clean \
-    --model_dir Model/model \
-    --model_name random_forest
-
-# Deploy Model
-python Script/deploy_model.py \
-    --model_path Model/model/random_forest.pkl \
-    --model_dir Model/model \
-    --metadata_dir Model/metadata
-````
-
-## 🐳 Docker
-
-Build dan jalankan aplikasi:
+**Update Sistem & Instalasi Docker**
 
 ```bash
-docker build -t mlops-local .
-docker run -d -p 3000:3000 --name mlops-app mlops-local
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y docker.io docker-compose
 ```
+
+**Konfigurasi Docker User (Opsional, agar tidak perlu `sudo`)**
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+**Verifikasi Instalasi**
+
+```bash
+docker --version
+docker-compose --version
+```
+
+---
+
+### 🗂️ Persiapan Jenkins
+
+**Buat Folder Persisten untuk Jenkins**
+
+```bash
+mkdir -p ./jenkins_home
+sudo chown -R 1000:1000 ./jenkins_home
+sudo chmod -R 755 ./jenkins_home
+```
+
+---
+
+### 🚀 Menjalankan Aplikasi
+
+**1. Hentikan Container Jenkins Lama (jika ada)**
+
+```bash
+docker rm -f [nama_container_jenkins]
+```
+
+**2. Jalankan Jenkins & Aplikasi**
+
+```bash
+docker-compose up -d
+```
+
+**3. Verifikasi Container**
+
+```bash
+docker ps
+```
+
+---
+
+### 🌐 Akses Aplikasi
+
+* **Jenkins Dashboard**: `http://<PUBLIC-IP-EC2>:8080`
+* **Aplikasi MLOps (Flask)**: `http://<PUBLIC-IP-EC2>:3000`
+
+---
+
+### ⚙️ Setup Awal Jenkins
+
+1. Akses Jenkins melalui browser.
+2. Ikuti wizard untuk *unlock Jenkins*, *install plugin default*, dan *buat admin user*.
+
+---
+
+### 🔗 Integrasi GitHub dan Jenkins (CI/CD Webhook)
+
+**Tambahkan GitHub Server di Jenkins**
+
+1. Masuk ke: `Manage Jenkins → Configure System`
+2. Scroll ke bagian **GitHub Servers** → klik **Add GitHub Server**
+3. Centang opsi `Manage hooks`
+4. Masukkan **Personal Access Token (PAT)** GitHub
+5. Klik tombol `Test Connection`
+
+**(Opsional) Setup Webhook Manual di GitHub Repo**
+
+1. Masuk ke GitHub → `Settings → Webhooks → Add webhook`
+2. Isi form berikut:
+
+   * **Payload URL**: `http://<PUBLIC-IP-EC2>:8080/github-webhook/`
+   * **Content type**: `application/json`
+   * **Events**: `Just the push event`
+3. Klik **Add webhook**
+
+---
+
+### 🔄 Workflow CI/CD
+
+* Setiap **push** ke branch yang dikonfigurasi akan **otomatis trigger pipeline** di Jenkins.
+* Pipeline akan mengikuti instruksi pada `Jenkinsfile`.
+* Pantau status pipeline di **Jenkins Dashboard**.
+* Jika pipeline tidak berjalan:
+
+  * Cek log di Jenkins
+  * Cek webhook delivery status di GitHub (`Settings → Webhooks → Recent Deliveries`)
+
+---
 
 ## 🧪 Testing Endpoint
 
@@ -108,25 +177,9 @@ curl http://localhost:3000/
 
 ## 📌 Teknologi
 
-* Python 3.x
+* Python 3.12
 * Jenkins
 * Docker
 * Scikit-learn
 * Pandas
-* Flask (jika digunakan untuk deployment)
-
-## 👩‍💻 Kontributor
-
-* **Berlian Ishma Zhafira Sujana** – Machine Learning Engineer & DevOps Enthusiast
-  [GitHub: berlianishma08](https://github.com/berlianishma08)
-
-## 📄 Lisensi
-
-Proyek ini berada di bawah lisensi MIT. Silakan gunakan dan modifikasi sesuai kebutuhan.
-
-```
-
----
-
-Kalau kamu ingin menambahkan badge CI/CD Jenkins, Docker Pulls, atau penjelasan detail tiap script Python, tinggal bilang saja ya!
-```
+* Flask

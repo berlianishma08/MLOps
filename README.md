@@ -16,7 +16,7 @@ MLOps/
 │   ├── train_model.py       # Script untuk training model ML
 │   └── deploy_model.py      # Script untuk menyimpan atau serving model
 ├── templates/               # Template HTML untuk Flask Web App
-│   └── (file HTML)          # Seperti index.html, result.html, dll
+│   └── index.html           # Merender halaman web
 ├── jenkins/                 # (Opsional) Konfigurasi tambahan untuk Jenkins
 ├── myenv/                   # Virtual environment Python (hasil dari `python3 -m venv`)
 ├── app.py                   # Aplikasi utama berbasis Flask (Web API)

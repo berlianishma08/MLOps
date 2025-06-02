@@ -6,7 +6,7 @@ Proyek ini merupakan pipeline MLOps yang dibangun menggunakan **Jenkins** dan **
 
 ```
 
-mlops-ml-project/
+MLOps/
 ├── .git/                    # Metadata Git (version control)
 ├── Data/                    # Folder data proyek ML
 │   └── raw/                 # Data mentah (belum diproses)

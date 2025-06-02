@@ -7,8 +7,8 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies Python
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install -r requirements.txt
 
 # Copy semua file aplikasi
 COPY . .

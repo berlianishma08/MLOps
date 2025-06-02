@@ -92,6 +92,7 @@ pipeline {
                     docker rm mlops-test
                     '''
                 }
+              }
             }
         
         stage('Deploy Application') {

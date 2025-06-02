@@ -6,21 +6,28 @@ Proyek ini merupakan pipeline MLOps yang dibangun menggunakan **Jenkins** dan **
 
 ```
 
-├── Data/
-│   ├── raw/
-│   └── clean/
-├── Model/
-│   ├── model/
-│   ├── metadata/
-│   └── preprocessor/
-├── Script/
-│   ├── data\_preparation.py
-│   ├── train\_model.py
-│   └── deploy\_model.py
-├── requirements.txt
-├── Dockerfile
-├── Jenkinsfile
-└── README.md
+mlops-ml-project/
+├── .git/                    # Metadata Git (version control)
+├── Data/                    # Folder data proyek ML
+│   └── raw/                 # Data mentah (belum diproses)
+├── Notebook/                # Notebook Jupyter untuk eksperimen & dokumentasi model
+├── Script/                  # Script Python modular untuk pipeline ML
+│   ├── data_preparation.py  # Script untuk preprocessing dan pembersihan data
+│   ├── train_model.py       # Script untuk training model ML
+│   └── deploy_model.py      # Script untuk menyimpan atau serving model
+├── templates/               # Template HTML untuk Flask Web App
+│   └── (file HTML)          # Seperti index.html, result.html, dll
+├── jenkins/                 # (Opsional) Konfigurasi tambahan untuk Jenkins
+├── myenv/                   # Virtual environment Python (hasil dari `python3 -m venv`)
+├── app.py                   # Aplikasi utama berbasis Flask (Web API)
+├── fix_model.py             # Script tambahan untuk fixing atau validasi model
+├── Dockerfile               # Konfigurasi Docker untuk membuat image proyek
+├── docker-compose.yml       # Menjalankan beberapa container sekaligus (Flask, Jenkins, dsb.)
+├── Jenkinsfile              # Pipeline deklaratif untuk CI/CD menggunakan Jenkins
+├── requirements.txt         # Dependencies Python (untuk `pip install -r`)
+├── environment.yml          # Environment Conda (opsional, alternatif dari requirements.txt)
+└── README.md                # Dokumentasi proyek (deskripsi, instruksi, teknologi, dll.)
+
 
 ````
 

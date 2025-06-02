@@ -70,10 +70,45 @@ pipeline {
                 }
             }
         }
-        
-        stage('Deploy') {
+       
+        stage('Test Docker Image') {
             steps {
-                sh 'docker run -d -p 5000:5000 --name mlops-app berlianishma08/mlops:latest'
+                script {
+                    // Test image dapat berjalan
+                    sh '''
+                    # Stop container jika sudah ada
+                    docker stop mlops-test || true
+                    docker rm mlops-test || true
+                    
+                    # Run container untuk testing
+                    docker run -d --name mlops-test -p 3001:3000 mlops-local:latest
+                    
+                    # Wait dan test health check
+                    sleep 10
+                    curl -f http://localhost:3001/ || exit 1
+                    
+                    # Stop test container
+                    docker stop mlops-test
+                    docker rm mlops-test
+                    '''
+                }
+            }
+        
+        stage('Deploy Application') {
+            steps {
+                sh '''
+                    # Stop aplikasi yang sedang berjalan
+                    docker stop mlops-app || true
+                    docker rm mlops-app || true
+                    
+                    # Deploy aplikasi baru
+                    docker run -d --name mlops-app -p 3000:3000 --restart unless-stopped mlops-local:latest
+                    
+                    # Verify deployment
+                    sleep 5
+                    curl -f http://localhost:3000/ || exit 1
+                    echo "✅ Application deployed successfully at http://localhost:3000"
+                    '''
             }
         }
     }
@@ -81,9 +116,22 @@ pipeline {
     post {
         success {
             echo '✅ Pipeline completed successfully!'
+            echo '🌐 Application accessible at: http://your-ec2-ip:3000'
         }
         failure {
-            echo '❌ Pipeline failed. Check logs.'
+            echo '❌ Pipeline failed. Check logs for details.'
+            // Cleanup on failure
+            sh '''
+            docker stop mlops-app mlops-test || true
+            docker rm mlops-app mlops-test || true
+            '''
+        }
+        always {
+            // Cleanup old images (keep last 3)
+            sh '''
+            docker image prune -f
+            docker images mlops-local --format "table {{.Repository}}:{{.Tag}}" | tail -n +4 | xargs -r docker rmi || true
+            '''
         }
     }
 }

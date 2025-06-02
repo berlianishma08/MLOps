@@ -1,5 +1,4 @@
-# Gunakan image Python saja (hapus node:alpine yang tidak perlu)
-FROM python:3.10-slim
+FROM python:3.10
 
 # Set working directory
 WORKDIR /app

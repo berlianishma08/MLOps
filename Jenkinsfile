@@ -17,7 +17,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                python3 -m venv myenv
+                python3.10 -m venv myenv
                 . myenv/bin/activate
                 pip install --upgrade pip setuptools wheel
                 pip install -r requirements.txt

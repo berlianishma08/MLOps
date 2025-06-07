@@ -7,7 +7,7 @@ from sklearn.metrics import (
     accuracy_score,
     precision_score,
     recall_score,
-    f1_score,
+    f1_score
 )
 import joblib
 import logging
@@ -71,12 +71,12 @@ def evaluate_model(model, X_test, y_test):
     logging.info(f"Precision: {precision:.4f}")
     logging.info(f"Recall: {recall:.4f}")
     logging.info(f"F1-score: {f1:.4f}")
-
     # Generate a detailed classification report
     report = classification_report(y_test, y_pred)
     logging.info("Classification Report:\n" + report)
 
     return accuracy, precision, recall, f1, report
+
 
 
 def save_evaluation_results(

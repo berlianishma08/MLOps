@@ -1,0 +1,101 @@
+2025-06-07 12:31:40,865 - INFO - Loading test data from Data/processed...
+2025-06-07 12:31:40,871 - INFO - Test data loaded successfully.
+2025-06-07 12:31:40,872 - INFO - Loading model from Model/xgboost_20250607.pkl...
+2025-06-07 12:31:40,991 - INFO - Model loaded successfully.
+2025-06-07 12:31:40,991 - INFO - Evaluating the model...
+2025-06-07 12:31:41,009 - INFO - Accuracy: 0.7179
+2025-06-07 12:31:41,009 - INFO - Precision: 0.7303
+2025-06-07 12:31:41,009 - INFO - Recall: 0.7179
+2025-06-07 12:31:41,009 - INFO - F1-score: 0.7199
+2025-06-07 12:31:41,019 - INFO - Classification Report:
+              precision    recall  f1-score   support
+
+         0.0       0.80      0.69      0.74        91
+         1.0       0.64      0.75      0.69        65
+
+    accuracy                           0.72       156
+   macro avg       0.72      0.72      0.72       156
+weighted avg       0.73      0.72      0.72       156
+
+2025-06-07 12:31:41,020 - INFO - Saving evaluation results to Results\XGBClassifier_20250607.txt...
+2025-06-07 12:31:41,021 - INFO - Evaluation results saved successfully.
+2025-06-07 12:31:41,021 - INFO - Model evaluation completed successfully.
+2025-06-07 13:53:54,499 - INFO - Loading test data from Data/processed...
+2025-06-07 13:53:54,518 - INFO - Test data loaded successfully.
+2025-06-07 13:53:54,518 - INFO - Loading model from Model/random_forest_20250607.pkl...
+2025-06-07 13:53:54,788 - INFO - Model loaded successfully.
+2025-06-07 13:53:54,788 - INFO - Evaluating the model...
+2025-06-07 13:53:54,847 - INFO - Accuracy: 0.7885
+2025-06-07 13:53:54,847 - INFO - Precision: 0.7880
+2025-06-07 13:53:54,847 - INFO - Recall: 0.7885
+2025-06-07 13:53:54,847 - INFO - F1-score: 0.7882
+2025-06-07 13:53:54,861 - INFO - Classification Report:
+              precision    recall  f1-score   support
+
+         0.0       0.82      0.82      0.82        91
+         1.0       0.75      0.74      0.74        65
+
+    accuracy                           0.79       156
+   macro avg       0.78      0.78      0.78       156
+weighted avg       0.79      0.79      0.79       156
+
+2025-06-07 13:56:19,015 - INFO - Loading test data from Data/processed...
+2025-06-07 13:56:19,022 - INFO - Test data loaded successfully.
+2025-06-07 13:56:19,022 - INFO - Loading model from Model/random_forest_20250607.pkl...
+2025-06-07 13:56:19,220 - INFO - Model loaded successfully.
+2025-06-07 13:56:19,220 - INFO - Evaluating the model...
+2025-06-07 13:56:19,243 - INFO - Accuracy: 0.7885
+2025-06-07 13:56:19,243 - INFO - Precision: 0.7880
+2025-06-07 13:56:19,243 - INFO - Recall: 0.7885
+2025-06-07 13:56:19,243 - INFO - F1-score: 0.7882
+2025-06-07 13:56:19,251 - INFO - Classification Report:
+              precision    recall  f1-score   support
+
+         0.0       0.82      0.82      0.82        91
+         1.0       0.75      0.74      0.74        65
+
+    accuracy                           0.79       156
+   macro avg       0.78      0.78      0.78       156
+weighted avg       0.79      0.79      0.79       156
+
+2025-06-07 13:58:58,550 - INFO - Loading test data from Data/processed...
+2025-06-07 13:58:58,558 - INFO - Test data loaded successfully.
+2025-06-07 13:58:58,558 - INFO - Loading model from Model/random_forest_20250607.pkl...
+2025-06-07 13:58:58,783 - INFO - Model loaded successfully.
+2025-06-07 13:58:58,784 - INFO - Evaluating the model...
+2025-06-07 13:58:58,816 - INFO - Accuracy: 0.7885
+2025-06-07 13:58:58,816 - INFO - Precision: 0.7880
+2025-06-07 13:58:58,816 - INFO - Recall: 0.7885
+2025-06-07 13:58:58,817 - INFO - F1-score: 0.7882
+2025-06-07 13:58:58,828 - INFO - Classification Report:
+              precision    recall  f1-score   support
+
+         0.0       0.82      0.82      0.82        91
+         1.0       0.75      0.74      0.74        65
+
+    accuracy                           0.79       156
+   macro avg       0.78      0.78      0.78       156
+weighted avg       0.79      0.79      0.79       156
+
+2025-06-07 14:02:06,843 - INFO - Loading test data from Data/processed...
+2025-06-07 14:02:06,850 - INFO - Test data loaded successfully.
+2025-06-07 14:02:06,850 - INFO - Loading model from Model/random_forest_20250607.pkl...
+2025-06-07 14:02:07,091 - INFO - Model loaded successfully.
+2025-06-07 14:02:07,091 - INFO - Evaluating the model...
+2025-06-07 14:02:07,116 - INFO - Accuracy: 0.7885
+2025-06-07 14:02:07,117 - INFO - Precision: 0.7880
+2025-06-07 14:02:07,117 - INFO - Recall: 0.7885
+2025-06-07 14:02:07,117 - INFO - F1-score: 0.7882
+2025-06-07 14:02:07,127 - INFO - Classification Report:
+              precision    recall  f1-score   support
+
+         0.0       0.82      0.82      0.82        91
+         1.0       0.75      0.74      0.74        65
+
+    accuracy                           0.79       156
+   macro avg       0.78      0.78      0.78       156
+weighted avg       0.79      0.79      0.79       156
+
+2025-06-07 14:02:07,127 - INFO - Saving evaluation results to Results\RandomForestClassifier_20250607.txt...
+2025-06-07 14:02:07,128 - INFO - Evaluation results saved successfully.
+2025-06-07 14:02:07,128 - INFO - Model evaluation completed successfully.

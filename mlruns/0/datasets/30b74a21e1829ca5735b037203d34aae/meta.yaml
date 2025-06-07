@@ -1,0 +1,8 @@
+digest: 2eae80aa
+name: dataset
+profile: '{"features_shape": [734, 7], "features_size": 5138, "features_nbytes": 20552}'
+schema: '{"mlflow_tensorspec": {"features": "[{\"type\": \"tensor\", \"tensor-spec\":
+  {\"dtype\": \"float32\", \"shape\": [-1, 7]}}]", "targets": null}}'
+source: '{"tags": {"mlflow.user": "ASUS", "mlflow.source.name": "Script/train_model.py",
+  "mlflow.source.type": "LOCAL", "mlflow.source.git.commit": "2ba8db0a426e2f41edda8bbe80323ef41cb8c264"}}'
+source_type: code

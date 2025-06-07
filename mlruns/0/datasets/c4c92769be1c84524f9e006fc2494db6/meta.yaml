@@ -1,0 +1,10 @@
+digest: f5c66541
+name: dataset
+profile: '{"num_rows": 734, "num_elements": 5138}'
+schema: '{"mlflow_colspec": [{"type": "double", "name": "Pclass"}, {"type": "double",
+  "name": "Sex"}, {"type": "double", "name": "Age"}, {"type": "double", "name": "SibSp"},
+  {"type": "double", "name": "Parch"}, {"type": "double", "name": "Fare"}, {"type":
+  "double", "name": "Embarked"}]}'
+source: '{"tags": {"mlflow.user": "ASUS", "mlflow.source.name": "Script/train_model.py",
+  "mlflow.source.type": "LOCAL", "mlflow.source.git.commit": "2ba8db0a426e2f41edda8bbe80323ef41cb8c264"}}'
+source_type: code

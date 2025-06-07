@@ -10,6 +10,7 @@ MLOps/
 ├── .git/                    # Metadata Git (version control)
 ├── Data/                    # Folder data proyek ML
 │   └── raw/                 # Data mentah (belum diproses)
+│   └── processed/           # Data hasil preprocessing (siap digunakan untuk traiing/evaluasi) 
 ├── Notebook/                # Notebook Jupyter untuk eksperimen & dokumentasi model
 ├── Script/                  # Script Python modular untuk pipeline ML
 │   ├── data_preparation.py  # Script untuk preprocessing dan pembersihan data
@@ -18,7 +19,15 @@ MLOps/
 ├── templates/               # Template HTML untuk Flask Web App
 │   └── index.html           # Merender halaman web
 ├── jenkins/                 # Konfigurasi tambahan untuk Jenkins
-├── myenv/                   # Virtual environment Python (hasil dari `python3 -m venv`)
+├── Log/                     # Menyimpan log dari proses training dan pipeline
+├── mlruns/                  # Direktori MLflow untuk menyimpan log, metrics, dan model hasil training
+│   ├── .trash               # File internal MLflow
+│   ├── 0                    # Eksperimen MLflow default
+│   ├── models               # Model tersimpan dari MLflow
+├── Model/                   # Folder model hasil training 
+│   ├── preprocessing        # Artifacts preprocessing
+├── Results/                 # Folder hasil evaluasi model, metric, dan visualisasi
+├── venv/                    # Virtual environment Python (hasil dari `python3 -m venv`)
 ├── app.py                   # Aplikasi utama berbasis Flask (Web API)
 ├── fix_model.py             # Fixing atau validasi model
 ├── Dockerfile               # Konfigurasi Docker untuk membuat image proyek
@@ -26,6 +35,7 @@ MLOps/
 ├── Jenkinsfile              # Pipeline deklaratif untuk CI/CD menggunakan Jenkins
 ├── requirements.txt         # Dependencies Python (untuk `pip install -r`)
 ├── environment.yml          # Environment 
+├── .gitignore/              # File konfigurasi Git ignore
 └── README.md                # Dokumentasi proyek (deskripsi, instruksi, teknologi, dll.)
 
 

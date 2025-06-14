@@ -34,6 +34,8 @@ pipeline {
             steps {
                 sh """
                 . ${VENV_NAME}/bin/activate
+                pip install --upgrade pip setuptools wheel
+                pip install catboost==1.2.2 --no-cache-dir
                 pip install -r requirements.txt
                 """
             }

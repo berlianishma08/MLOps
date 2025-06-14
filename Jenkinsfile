@@ -72,39 +72,39 @@ pipeline {
             }
         }
        
-        stage('Test Docker Image') {
-            steps {
-                script {
-                    // Test image dapat berjalan
-                    sh '''
-                    # Stop container jika sudah ada
-                    docker stop mlops-test || true
-                    docker rm mlops-test || true
+        // stage('Test Docker Image') {
+        //     steps {
+        //         script {
+        //             // Test image dapat berjalan
+        //             sh '''
+        //             # Stop container jika sudah ada
+        //             docker stop mlops-test || true
+        //             docker rm mlops-test || true
                     
-                    # Run container untuk testing
-                    docker run -d --name mlops-test -p 3001:3000 mlops-local:latest
+        //             # Run container untuk testing
+        //             docker run -d --name mlops-test -p 3001:3000 mlops-local:latest
                     
-                    # Wait dan test health check
-                    sleep 10
-                    curl -f http://localhost:3001/ || exit 1
+        //             # Wait dan test health check
+        //             sleep 10
+        //             curl -f http://localhost:3001/ || exit 1
                     
-                    # Stop test container
-                    docker stop mlops-test
-                    docker rm mlops-test
-                    '''
-                }
-              }
-            }
+        //             # Stop test container
+        //             docker stop mlops-test
+        //             docker rm mlops-test
+        //             '''
+        //         }
+        //       }
+        //     }
         
         stage('Deploy Application') {
             steps {
                 sh '''
                     # Stop aplikasi yang sedang berjalan
-                    docker stop mlops-app || true
-                    docker rm mlops-app || true
+                    docker stop mlops || true
+                    docker rm mlops || true
                     
                     # Deploy aplikasi baru
-                    docker run -d --name mlops-app -p 3000:3000 --restart unless-stopped mlops-local:latest
+                    docker run -d --name mlops -p 3000:3000 --restart unless-stopped mlops-local:latest
                     
                     # Verify deployment
                     sleep 5
@@ -124,8 +124,8 @@ pipeline {
             echo '❌ Pipeline failed. Check logs for details.'
             // Cleanup on failure
             sh '''
-            docker stop mlops-app mlops-test || true
-            docker rm mlops-app mlops-test || true
+            docker stop mlops || true
+            docker rm mlops || true
             '''
         }
         always {

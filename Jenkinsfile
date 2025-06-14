@@ -15,7 +15,7 @@ pipeline {
             steps {
                 git credentialsId: 'jen-doc-git', 
                     url: 'https://github.com/berlianishma08/MLOps.git',
-                    branch: 'main'  // Explicitly specify branch
+                    branch: 'master'  // Explicitly specify branch
             }
         }
 

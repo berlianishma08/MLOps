@@ -3,27 +3,18 @@ FROM python:3.10-slim
 # Set working directory
 WORKDIR /app
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
-# Install system dependencies (if needed)
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc python3-dev && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copy requirements first for better caching
+# Copy requirements terlebih dahulu untuk better caching
 COPY requirements.txt .
 
-# Install Python dependencies
+# Install dependencies Python
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy application files
+# Copy semua file aplikasi
 COPY . .
 
-# Expose port (make sure this matches your Flask app)
+# Expose port yang sama dengan app.py (3000, bukan 5000)
 EXPOSE 3000
 
-# Command to run the application
+# Command untuk menjalankan aplikasi
 CMD ["python", "app.py"]

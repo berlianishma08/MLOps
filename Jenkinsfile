@@ -104,7 +104,7 @@ pipeline {
                     # docker rm mlops || true
                     
                     # Deploy aplikasi baru
-                    docker run -d --name mlops -p 3000:3000 --restart unless-stopped mlops-local:latest
+                    docker run -d --name mlops -p 3000:3000 --restart unless-stopped mlops:latest
                     
                     # Verify deployment
                     sleep 5
@@ -118,7 +118,7 @@ pipeline {
     post {
         success {
             echo '✅ Pipeline completed successfully!'
-            echo '🌐 Application accessible at: http://your-ec2-ip:3000'
+            echo '🌐 Application accessible at: http://98.82.143.252:3000'
         }
         failure {
             echo '❌ Pipeline failed. Check logs for details.'

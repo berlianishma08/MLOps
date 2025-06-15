@@ -3,17 +3,20 @@ import argparse
 import pandas as pd
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
-# from catboost import CatBoostClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 import joblib
 import logging
-import mlflow 
+import mlflow
+import mlflow.sklearn
+import matplotlib.pyplot as plt
+import seaborn as sns
+from mlflow.models.signature import infer_signature
 
 
-log_dir = os.path.join(os.path.join(os.getcwd()), "Log")
+log_dir = os.path.join(os.getcwd(), "Log")
 os.makedirs(log_dir, exist_ok=True)
 log_file_path = os.path.join(log_dir, "train.log")
 
@@ -31,68 +34,84 @@ def load_data(data_dir):
     X_test_path = os.path.join(data_dir, "X_test.csv")
     y_test_path = os.path.join(data_dir, "y_test.csv")
 
-    if not os.path.exists(X_train_path):
-        raise FileNotFoundError(f"The file {X_train_path} does not exist.")
+    if not all(map(os.path.exists, [X_train_path, y_train_path, X_test_path, y_test_path])):
+        raise FileNotFoundError("One or more dataset files not found in the provided directory.")
 
-    if not os.path.exists(X_test_path):
-        raise FileNotFoundError(f"The file {X_test_path} does not exist.")
-    
-    if not os.path.exists(y_train_path):
-        raise FileNotFoundError(f"The file {y_train_path} does not exist.")
-
-    if not os.path.exists(y_test_path):
-        raise FileNotFoundError(f"The file {y_test_path} does not exist.")
-    
     X_train = pd.read_csv(X_train_path)
     y_train = pd.read_csv(y_train_path)
     X_test = pd.read_csv(X_test_path)
     y_test = pd.read_csv(y_test_path)
 
-    if isinstance(y_train, pd.DataFrame):
-        y_train = y_train.iloc[:, 0]  # Extract first column if y_train is a DataFrame
+    y_train = y_train.iloc[:, 0] if isinstance(y_train, pd.DataFrame) else y_train
+    y_test = y_test.iloc[:, 0] if isinstance(y_test, pd.DataFrame) else y_test
 
-    if isinstance(y_test, pd.DataFrame):
-        y_test = y_test.iloc[:, 0]  # Extract first column if y_train is a DataFrame
-        
     logging.info("Data loaded successfully.")
     return X_train, X_test, y_train, y_test
 
 
+def log_confusion_matrix(model, X_test, y_test):
+    preds = model.predict(X_test)
+    cm = confusion_matrix(y_test, preds)
+
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+    plt.title("Confusion Matrix")
+    plt.ylabel("True Label")
+    plt.xlabel("Predicted Label")
+    plt.tight_layout()
+    cm_path = "confusion_matrix.png"
+    plt.savefig(cm_path)
+    plt.close()
+    mlflow.log_artifact(cm_path)
+
+
 def train_model(X_train, X_test, y_train, y_test, model_name="xgboost", params=None):
+    # Optional: set a tracking URI to a remote MLflow server
+    # mlflow.set_tracking_uri("http://your-mlflow-server:5000")
+
     with mlflow.start_run():
-        logging.info(f"Training the model: {model_name}...")
         mlflow.autolog()
-        # Choose model based on input
+        logging.info(f"Training the model: {model_name}...")
+        if params:
+            mlflow.log_params(params)
+
+        # Model selection
         if model_name == "xgboost":
-            model = XGBClassifier(**(params or {}))
-        elif model_name == "lgbm" or model_name == "gbdt":
-            model = LGBMClassifier(**(params or {}))
-        # elif model_name == 'catboost':
-        #     model = CatBoostClassifier(verbose=0, **(params or {}))
+            model = XGBClassifier(**params or {})
+        elif model_name in ["lgbm", "gbdt"]:
+            model = LGBMClassifier(**params or {})
         elif model_name == "random_forest":
-            model = RandomForestClassifier(
-                n_estimators=100, random_state=42, **(params or {})
-            )
+            model = RandomForestClassifier(n_estimators=100, random_state=42, **(params or {}))
         elif model_name == "svm":
-            model = SVC(**(params or {}))
+            model = SVC(**params or {})
         elif model_name == "logistic_regression":
-            model = LogisticRegression(**(params or {}))
+            model = LogisticRegression(**params or {})
         else:
-            raise ValueError(
-                f"Model {model_name} is not supported. Choose from 'xgboost', 'catboost', 'lgbm', 'gbdt', 'random_forest', 'svm', or 'logistic_regression'."
-            )
+            raise ValueError(f"Model '{model_name}' not supported.")
 
         try:
             model.fit(X_train, y_train)
             logging.info(f"Model {model_name} trained successfully.")
+
+            # Evaluate
             accuracy = evaluate_model(model, X_test, y_test)
             mlflow.log_metric("accuracy", accuracy)
+
+            # Signature + example
+            signature = infer_signature(X_test, model.predict(X_test))
+            input_example = X_test.head(3)
+
+            # Model logging
             if model_name == "xgboost":
-                mlflow.xgboost.log_model(model, "model")
-            elif model_name == "lgbm":
-                mlflow.lightgbm.log_model(model, "model")
+                mlflow.xgboost.log_model(model, "model", signature=signature, input_example=input_example)
+            elif model_name in ["lgbm", "gbdt"]:
+                mlflow.lightgbm.log_model(model, "model", signature=signature, input_example=input_example)
             else:
-                mlflow.sklearn.log_model(model, "model")
+                mlflow.sklearn.log_model(model, "model", signature=signature, input_example=input_example)
+
+            # Save confusion matrix as artifact
+            log_confusion_matrix(model, X_test, y_test)
+
         except Exception as e:
             logging.error(f"Error during training: {e}")
             raise
@@ -102,28 +121,20 @@ def train_model(X_train, X_test, y_train, y_test, model_name="xgboost", params=N
 
 def evaluate_model(model, X_test, y_test):
     logging.info("Evaluating the model...")
-    y_train_pred = model.predict(X_test)
-    accuracy = accuracy_score(y_test, y_train_pred)
-    logging.info(f"Training Accuracy: {accuracy:.4f}")
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    logging.info(f"Accuracy: {accuracy:.4f}")
     return accuracy
 
 
 def save_model(model, model_dir, model_name, timestamp):
-    # Create the model directory if it doesn't exist
     os.makedirs(model_dir, exist_ok=True)
-
-    # Combine model_name with timestamp
-    model_name_with_time = f"{model_name}_{timestamp}"
-
-    # Use model_name_with_time in the file path
-    model_path = os.path.join(model_dir, f"{model_name_with_time}.pkl")
-
+    model_path = os.path.join(model_dir, f"{model_name}_{timestamp}.pkl")
     logging.info(f"Saving model to {model_path}...")
 
     try:
-        # Save the model as a .pkl file
         joblib.dump(model, model_path)
-        logging.info(f"Model saved successfully as {model_path}.")
+        logging.info("Model saved successfully.")
     except Exception as e:
         logging.error(f"Error saving model: {e}")
         raise
@@ -132,65 +143,25 @@ def save_model(model, model_dir, model_name, timestamp):
 
 
 def main(data_dir, model_dir, timestamp, model_name="xgboost", params=None):
-    # Load training data
     X_train, X_test, y_train, y_test = load_data(data_dir)
-
-    # Train the model
-    model = train_model(X_train,X_test, y_train, y_test, model_name, params)
-
-    # Save the trained model
+    model = train_model(X_train, X_test, y_train, y_test, model_name, params)
     save_model(model, model_dir, model_name, timestamp)
-
     logging.info("Model training and saving completed successfully.")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a machine learning model.")
-    parser.add_argument(
-        "-d",
-        "--data_dir",
-        type=str,
-        required=True,
-        help="Directory where the processed data is stored.",
-    )
-    parser.add_argument(
-        "-m",
-        "--model_dir",
-        type=str,
-        required=True,
-        help="Directory where the trained model will be saved.",
-    )
-    parser.add_argument(
-        "-n",
-        "--model_name",
-        type=str,
-        default="xgboost",
-        help="Model to train. Options: 'xgboost', 'lgbm', 'random_forest', 'svm', 'logistic_regression'.",
-    )
-    parser.add_argument(
-        "-p",
-        "--params",
-        type=str,
-        default=None,
-        help="Optional model hyperparameters in JSON format.",
-    )
-    parser.add_argument(
-        "-t",
-        "--timestamp",
-        type=str,
-        required=True,
-        help="Timestamp when Makefile executed.",
-    )
+    parser.add_argument("-d", "--data_dir", type=str, required=True, help="Path to data directory.")
+    parser.add_argument("-m", "--model_dir", type=str, required=True, help="Path to save model.")
+    parser.add_argument("-n", "--model_name", type=str, default="xgboost",
+                        help="Model name: 'xgboost', 'lgbm', 'random_forest', 'svm', 'logistic_regression'.")
+    parser.add_argument("-p", "--params", type=str, default=None, help="Model hyperparameters as JSON string.")
+    parser.add_argument("-t", "--timestamp", type=str, required=True, help="Timestamp for saved model.")
 
     args = parser.parse_args()
-
-    # Convert params from JSON string to Python dictionary, if provided
     params = None
     if args.params:
         import json
-
         params = json.loads(args.params)
 
-    main(
-        args.data_dir, args.model_dir, args.timestamp, args.model_name, params
-    )
+    main(args.data_dir, args.model_dir, args.timestamp, args.model_name, params)

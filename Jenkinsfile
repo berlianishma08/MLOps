@@ -5,6 +5,7 @@ pipeline {
         TIMESTAMP = "${new Date().format('yyyyMMdd_HHmmss')}"
         DOCKER_HUB_CREDENTIALS_ID = 'jen-dockerhub'
         DOCKER_HUB_REPO = 'berlianishma08/mlops'
+        MLFLOW_TRACKING_URI = 'http://98.82.143.252:5000' 
     }
 
     stages {
@@ -39,6 +40,7 @@ pipeline {
             steps {
                 sh '''
                 . myenv/bin/activate
+                export MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
                 python Script/train_model.py --data_dir Data/clean --model_dir Model/model --timestamp $TIMESTAMP --model_name random_forest
                 '''
             }
@@ -71,46 +73,17 @@ pipeline {
                 }
             }
         }
-       
-        // stage('Test Docker Image') {
-        //     steps {
-        //         script {
-        //             // Test image dapat berjalan
-        //             sh '''
-        //             # Stop container jika sudah ada
-        //             docker stop mlops-test || true
-        //             docker rm mlops-test || true
-                    
-        //             # Run container untuk testing
-        //             docker run -d --name mlops-test -p 3001:3000 mlops-local:latest
-                    
-        //             # Wait dan test health check
-        //             sleep 10
-        //             curl -f http://localhost:3001/ || exit 1
-                    
-        //             # Stop test container
-        //             docker stop mlops-test
-        //             docker rm mlops-test
-        //             '''
-        //         }
-        //       }
-        //     }
-        
+
         stage('Deploy Application') {
             steps {
                 sh '''
-                    # Stop aplikasi yang sedang berjalan
-                    # docker stop mlops || true
-                    # docker rm mlops || true
-                    
-                    # Deploy aplikasi baru
-                    # docker run -d --name mlops -p 3000:3000 --restart unless-stopped mlops:latest
-                    
-                    # Verify deployment
-                    sleep 5
-                    curl -f http://localhost:3000/ || exit 1
-                    echo "✅ Application deployed successfully at http://localhost:3000"
-                    '''
+                docker stop mlops || true
+                docker rm mlops || true
+                docker run -d --name mlops -p 3000:3000 --restart unless-stopped ${DOCKER_HUB_REPO}:latest
+                sleep 5
+                curl -f http://98.82.143.252:3000/ || exit 1
+                echo "✅ Application deployed successfully at http://98.82.143.252:3000"
+                '''
             }
         }
     }
@@ -119,20 +92,19 @@ pipeline {
         success {
             echo '✅ Pipeline completed successfully!'
             echo '🌐 Application accessible at: http://98.82.143.252:3000'
+            echo "🔎 Cek hasil eksperimen di MLflow: ${MLFLOW_TRACKING_URI}"
         }
         failure {
             echo '❌ Pipeline failed. Check logs for details.'
-            // Cleanup on failure
             sh '''
             docker stop mlops || true
             docker rm mlops || true
             '''
         }
         always {
-            // Cleanup old images (keep last 3)
             sh '''
             docker image prune -f
-            docker images mlops-local --format "table {{.Repository}}:{{.Tag}}" | tail -n +4 | xargs -r docker rmi || true
+            docker images ${DOCKER_HUB_REPO} --format "{{.Repository}}:{{.Tag}}" | tail -n +4 | xargs -r docker rmi || true
             '''
         }
     }

@@ -12,7 +12,6 @@ import logging
 import mlflow
 import mlflow.sklearn
 import matplotlib.pyplot as plt
-import seaborn as sns
 from mlflow.models.signature import infer_signature
 
 
@@ -54,7 +53,6 @@ def log_confusion_matrix(model, X_test, y_test):
     cm = confusion_matrix(y_test, preds)
 
     plt.figure(figsize=(6, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
     plt.title("Confusion Matrix")
     plt.ylabel("True Label")
     plt.xlabel("Predicted Label")

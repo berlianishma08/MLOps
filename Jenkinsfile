@@ -78,8 +78,8 @@ pipeline {
             steps {
                 sh '''
                 
-                docker run -d --name mlops -p 3000:3000 --restart unless-stopped ${DOCKER_HUB_REPO}:latest
-                sleep 5
+                # docker run -d --name mlops -p 3000:3000 --restart unless-stopped ${DOCKER_HUB_REPO}:latest
+                # sleep 5
                 curl -f http://98.82.143.252:3000/ || exit 1
                 echo "✅ Application deployed successfully at http://98.82.143.252:3000"
                 '''

@@ -100,8 +100,8 @@ pipeline {
             steps {
                 sh '''
                     # Stop aplikasi yang sedang berjalan
-                    docker stop mlops || true
-                    docker rm mlops || true
+                    # docker stop mlops || true
+                    # docker rm mlops || true
                     
                     # Deploy aplikasi baru
                     docker run -d --name mlops -p 3000:3000 --restart unless-stopped mlops-local:latest

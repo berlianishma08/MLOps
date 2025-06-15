@@ -77,8 +77,7 @@ pipeline {
         stage('Deploy Application') {
             steps {
                 sh '''
-                docker stop mlops || true
-                docker rm mlops || true
+                
                 docker run -d --name mlops -p 3000:3000 --restart unless-stopped ${DOCKER_HUB_REPO}:latest
                 sleep 5
                 curl -f http://98.82.143.252:3000/ || exit 1
@@ -96,10 +95,7 @@ pipeline {
         }
         failure {
             echo '❌ Pipeline failed. Check logs for details.'
-            sh '''
-            docker stop mlops || true
-            docker rm mlops || true
-            '''
+            
         }
         always {
             sh '''
